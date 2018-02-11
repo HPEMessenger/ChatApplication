@@ -1,6 +1,7 @@
 package com.example.fiona.chatapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,11 +54,19 @@ public class AllUsersActivity extends AppCompatActivity {
        {
 
            @Override
-           protected void populateViewHolder(AllUsersViewHolder holder, AllUsers model, int position) {
+           protected void populateViewHolder(AllUsersViewHolder holder, AllUsers model, final int position) {
                holder.setUser_name(model.getUser_name());
                holder.setUser_status(model.getUser_status());
                holder.setUser_thumb_image(getApplicationContext(),model.getUser_thumb_image());
-
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String visit_user_id=getRef(position).getKey();
+                        Intent profile_activity=new Intent(AllUsersActivity.this,ProfileActivity.class);
+                        profile_activity.putExtra("User_visit_id",visit_user_id);
+                        startActivity(profile_activity);
+                    }
+                });
            }
 
        };
