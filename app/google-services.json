@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "50330896191",
+    "firebase_url": "https://chatapplication-669bb.firebaseio.com",
+    "project_id": "chatapplication-669bb",
+    "storage_bucket": "chatapplication-669bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50330896191:android:1f50d0715142feba",
+        "android_client_info": {
+          "package_name": "com.example.fiona.chatapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "50330896191-127c5vl7c754vk67dbamiiiv20ig53a5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fiona.chatapplication",
+            "certificate_hash": "635a0f0dfc8ae5ca42e35efe132670244b691b4e"
+          }
+        },
+        {
+          "client_id": "50330896191-iulv9a0v04r6s5lfs84585djrbd7t46r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNnY5_il2u-KiS2xTTNgPjQCkl2HPrYbU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50330896191-iulv9a0v04r6s5lfs84585djrbd7t46r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
