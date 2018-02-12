@@ -25,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -68,6 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
         String user_id=mAuth.getCurrentUser().getUid();
         getDatabaseReference= FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        getDatabaseReference.keepSynced(true);
         storeprofileImage= FirebaseStorage.getInstance().getReference().child("Profile_images");
         profile_image=(CircleImageView)findViewById(R.id.profile_image);
         display_name=(TextView)findViewById(R.id.username);
@@ -92,12 +95,28 @@ public class SettingsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name=dataSnapshot.child("User_name").getValue().toString();
                 String status=dataSnapshot.child("User_status").getValue().toString();
-                String image=dataSnapshot.child("User_image").getValue().toString();
+                final String image=dataSnapshot.child("User_image").getValue().toString();
                 String thumb_image=dataSnapshot.child("User_thumb_image").getValue().toString();
                 display_status.setText(status);
                 display_name.setText(name);
                 if(!image.equals("default_image")) {
-                    Picasso.with(SettingsActivity.this).load(image).placeholder(R.drawable.default_image).into(profile_image);
+                    Picasso.with(SettingsActivity.this)
+                            .load(image)
+                            .networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.drawable.default_image)
+                            .into(profile_image, new Callback() {
+                                @Override
+                                public void onSuccess() {
+
+                                }
+
+                                @Override
+                                public void onError() {
+                                    Picasso.with(SettingsActivity.this).load(image).placeholder(R.drawable.default_image).into(profile_image);
+
+                                }
+                            });
+
                 }
 
             }

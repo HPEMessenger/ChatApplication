@@ -37,7 +37,9 @@ public class ProfileActivity extends AppCompatActivity {
         receiver_user_id=getIntent().getExtras().get("User_visit_id").toString();
         UsersReference= FirebaseDatabase.getInstance().getReference().child("Users").child(receiver_user_id);
         FriendRequestReference=FirebaseDatabase.getInstance().getReference().child("Friend_Request");
+        FriendRequestReference.keepSynced(true);
         FriendsReference=FirebaseDatabase.getInstance().getReference().child("Friends");
+        FriendsReference.keepSynced(true);
         mAuth=FirebaseAuth.getInstance();
         sender_user_id=mAuth.getCurrentUser().getUid();
         send_request=findViewById(R.id.profile_visit_send_request_btn);
