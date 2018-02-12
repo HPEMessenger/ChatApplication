@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +32,7 @@ public class AllUsersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_users);
-         mToolbar = (Toolbar) findViewById(R.id.all_users_app_bar);
+        mToolbar = (Toolbar) findViewById(R.id.all_users_app_bar);
         setSupportActionBar(mToolbar);
 
         getSupportActionBar().setTitle("All Users");
@@ -39,6 +41,7 @@ public class AllUsersActivity extends AppCompatActivity {
         all_user_list = (RecyclerView)findViewById(R.id.all_users_list);
         all_user_list.setHasFixedSize(true);
         all_user_list.setLayoutManager(new LinearLayoutManager(this));
+        allUsersDatabaseReference.keepSynced(true);
 
     }
    @Override
@@ -78,7 +81,7 @@ public class AllUsersActivity extends AppCompatActivity {
     public static class AllUsersViewHolder extends RecyclerView.ViewHolder {
         View mView;
         private TextView User_name,User_status;
-        private CircleImageView User_thumb_image;
+        private CircleImageView thumb_image;
 
         public AllUsersViewHolder(View itemView) {
             super(itemView);
@@ -101,11 +104,23 @@ public class AllUsersActivity extends AppCompatActivity {
 
 
 
-         void setUser_thumb_image(Context ctx,String User_thumb_image) {
-             this.User_thumb_image=mView.findViewById(R.id.all_users_profile_image);
+         void setUser_thumb_image(final Context ctx, final String User_thumb_image) {
+             thumb_image=mView.findViewById(R.id.all_users_profile_image);
 
-             Picasso.with(ctx).load(User_thumb_image).placeholder(R.drawable.default_image).into(this.User_thumb_image);
-        }
+             Picasso.with(ctx).load(User_thumb_image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.default_image).into(this.thumb_image, new Callback() {
+                 @Override
+                 public void onSuccess() {
+
+                 }
+
+                 @Override
+                 public void onError() {
+                     Picasso.with(ctx).load(User_thumb_image).placeholder(R.drawable.default_image).into(thumb_image);
+
+                 }
+             });
+
+         }
 
     }
 }
