@@ -21,12 +21,13 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity {
     private Button send_request,decline_request;
     private TextView profile_username,profile_status;
     private ImageView profileImage;
-    private DatabaseReference UsersReference,FriendRequestReference,FriendsReference;
+    private DatabaseReference UsersReference,FriendRequestReference,FriendsReference,NotificationReference;
     private String current_state;
     private FirebaseAuth mAuth;
     String sender_user_id,receiver_user_id;
@@ -40,6 +41,8 @@ public class ProfileActivity extends AppCompatActivity {
         FriendRequestReference.keepSynced(true);
         FriendsReference=FirebaseDatabase.getInstance().getReference().child("Friends");
         FriendsReference.keepSynced(true);
+        NotificationReference=FirebaseDatabase.getInstance().getReference().child("Notifications");
+        NotificationReference.keepSynced(true);
         mAuth=FirebaseAuth.getInstance();
         sender_user_id=mAuth.getCurrentUser().getUid();
         send_request=findViewById(R.id.profile_visit_send_request_btn);
@@ -67,10 +70,22 @@ public class ProfileActivity extends AppCompatActivity {
                                         if(req_type.equals("sent")){
                                             current_state="request_sent";
                                             send_request.setText("Cancel Friend Request");
+                                            decline_request.setVisibility(View.INVISIBLE);
+                                            decline_request.setEnabled(false);
+
                                         }
                                         if(req_type.equals("received")){
                                             current_state="request_received";
                                             send_request.setText("Accept Friend Request");
+                                            decline_request.setVisibility(View.VISIBLE);
+                                            decline_request.setEnabled(true);
+                                            decline_request.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    DeclineFriendRequest();
+                                                }
+                                            });
+
                                         }
                                     }
                                 }
@@ -82,6 +97,9 @@ public class ProfileActivity extends AppCompatActivity {
                                                     if(dataSnapshot.hasChild(receiver_user_id)){
                                                         current_state="friends";
                                                         send_request.setText("Unfriend ");
+                                                        decline_request.setVisibility(View.INVISIBLE);
+                                                        decline_request.setEnabled(false);
+
                                                     }
                                                 }
 
@@ -105,6 +123,8 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+        decline_request.setVisibility(View.INVISIBLE);
+        decline_request.setEnabled(false);
         if(!sender_user_id.equals(receiver_user_id)){
             send_request.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -133,6 +153,36 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    private void DeclineFriendRequest() {
+        FriendRequestReference.child(sender_user_id)
+                .child(receiver_user_id)
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            FriendRequestReference.child(receiver_user_id)
+                                    .child(sender_user_id)
+                                    .removeValue()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                send_request.setEnabled(true);
+                                                current_state="not_friends";
+                                                send_request.setText("Send Friend Request");
+                                                decline_request.setVisibility(View.INVISIBLE);
+                                                decline_request.setEnabled(false);
+
+                                            }
+                                        }
+                                    });
+
+                        }
+                    }
+                });
+    }
+
     private void Unfriend() {
         FriendsReference.child(sender_user_id).child(receiver_user_id).removeValue()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -147,6 +197,9 @@ public class ProfileActivity extends AppCompatActivity {
                                                 send_request.setEnabled(true);
                                                 current_state="not_friends";
                                                 send_request.setText("SEND REQUEST");
+                                                decline_request.setVisibility(View.INVISIBLE);
+                                                decline_request.setEnabled(false);
+
                                             }
                                         }
                                     });
@@ -189,6 +242,8 @@ public class ProfileActivity extends AppCompatActivity {
                                                                         send_request.setEnabled(true);
                                                                         current_state="friends";
                                                                         send_request.setText("Unfriend");
+                                                                        decline_request.setVisibility(View.INVISIBLE);
+                                                                        decline_request.setEnabled(false);
                                                                     }
                                                                 }
                                                             });
@@ -222,6 +277,9 @@ public class ProfileActivity extends AppCompatActivity {
                                                    send_request.setEnabled(true);
                                                    current_state="not_friends";
                                                    send_request.setText("Send Friend Request");
+                                                   decline_request.setVisibility(View.INVISIBLE);
+                                                   decline_request.setEnabled(false);
+
                                                }
                                         }
                                     });
@@ -248,9 +306,23 @@ public class ProfileActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
-                                                send_request.setEnabled(true);
-                                                current_state="request_sent";
-                                                send_request.setText("Cancel Friend Request");
+                                                HashMap<String,String> notificationdata=new HashMap<String, String>();
+                                                notificationdata.put("from",sender_user_id);
+                                                notificationdata.put("type","request");
+                                                NotificationReference.child(receiver_user_id).push().setValue(notificationdata)
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if(task.isSuccessful()){
+                                                                    send_request.setEnabled(true);
+                                                                    current_state="request_sent";
+                                                                    send_request.setText("Cancel Friend Request");
+                                                                    decline_request.setVisibility(View.INVISIBLE);
+                                                                    decline_request.setEnabled(false);
+                                                                }
+                                                            }
+                                                        });
+
                                             }
                                         }
                                     });
