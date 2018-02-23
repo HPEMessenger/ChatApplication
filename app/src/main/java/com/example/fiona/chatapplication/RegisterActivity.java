@@ -18,6 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -73,10 +74,14 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                      if(task.isSuccessful()){
+                         String DeviceToken= FirebaseInstanceId.getInstance().getToken();
+
+
                          String user_id=mAuth.getCurrentUser().getUid();
                          databaseReference= FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
                          databaseReference.child("User_name").setValue(name);
                          databaseReference.child("User_status").setValue("Hey There! I am using Messenger!");
+                         databaseReference.child("device_token").setValue(DeviceToken);
                          databaseReference.child("User_image").setValue("default_image");
                          databaseReference.child("User_thumb_image").setValue("default_image").addOnCompleteListener(new OnCompleteListener<Void>() {
                              @Override

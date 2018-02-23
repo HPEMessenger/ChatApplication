@@ -27,31 +27,32 @@ public class ProfileActivity extends AppCompatActivity {
     private Button send_request,decline_request;
     private TextView profile_username,profile_status;
     private ImageView profileImage;
-    private DatabaseReference UsersReference,FriendRequestReference,FriendsReference,NotificationReference;
+    private DatabaseReference FriendRequestReference;
+    private DatabaseReference FriendsReference;
+    private DatabaseReference NotificationReference;
     private String current_state;
-    private FirebaseAuth mAuth;
     String sender_user_id,receiver_user_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         receiver_user_id=getIntent().getExtras().get("User_visit_id").toString();
-        UsersReference= FirebaseDatabase.getInstance().getReference().child("Users").child(receiver_user_id);
+        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference().child("Users").child(receiver_user_id);
         FriendRequestReference=FirebaseDatabase.getInstance().getReference().child("Friend_Request");
         FriendRequestReference.keepSynced(true);
         FriendsReference=FirebaseDatabase.getInstance().getReference().child("Friends");
         FriendsReference.keepSynced(true);
         NotificationReference=FirebaseDatabase.getInstance().getReference().child("Notifications");
         NotificationReference.keepSynced(true);
-        mAuth=FirebaseAuth.getInstance();
-        sender_user_id=mAuth.getCurrentUser().getUid();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        sender_user_id= mAuth.getCurrentUser().getUid();
         send_request=findViewById(R.id.profile_visit_send_request_btn);
         decline_request=findViewById(R.id.profile_visit_decline_request_btn);
         profile_username=findViewById(R.id.profile_visit_username);
         profile_status=findViewById(R.id.profile_visit_status);
         profileImage=findViewById(R.id.profile_visit_user_image);
         current_state="not_friends";
-        UsersReference.addValueEventListener(new ValueEventListener() {
+        usersReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name=dataSnapshot.child("User_name").getValue().toString();
