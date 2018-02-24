@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,11 +48,32 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseRecyclerAdapter<Friends,FriendsViewHolder> 
+        FirebaseRecyclerAdapter<Friends,FriendsViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Friends, FriendsViewHolder>
+                        (
+                                Friends.class,
+                                R.layout.all_users_display_layout,
+                                FriendsViewHolder.class,
+                                friendsReference
+
+                        ) {
+                    @Override
+                    protected void populateViewHolder(FriendsViewHolder viewHolder, Friends model, int position) {
+                        viewHolder.setDate(model.getDate());
+                        String list_user_id = getRef(position).getKey();
+                    }
+                };
+        myFriendList.setAdapter(firebaseRecyclerAdapter);
     }
     public static class FriendsViewHolder extends RecyclerView.ViewHolder{
+        View mView;
         public FriendsViewHolder(View itemView) {
             super(itemView);
+            mView = itemView;
+        }
+        public void setDate(String date) {
+            TextView sinceFriendDate = (TextView)mView.findViewById(R.id.all_users_status);
+            sinceFriendDate.setText(date);
         }
     }
 }
