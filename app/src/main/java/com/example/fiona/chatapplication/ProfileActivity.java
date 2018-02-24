@@ -65,8 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()){
-                                    if(dataSnapshot.hasChild(receiver_user_id)){
+                                if(dataSnapshot.hasChild(receiver_user_id)){
                                         String req_type=dataSnapshot.child(receiver_user_id).child("request_type").getValue().toString();
                                         if(req_type.equals("sent")){
                                             current_state="request_sent";
@@ -88,7 +87,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             });
 
                                         }
-                                    }
+
                                 }
                                 else{
                                     FriendsReference.child(sender_user_id)
@@ -216,12 +215,14 @@ public class ProfileActivity extends AppCompatActivity {
         final String saveCurrentDate= currentDate.format(callForDate.getTime());
         FriendsReference.child(sender_user_id)
                 .child(receiver_user_id)
+                .child("date")
                 .setValue(saveCurrentDate)
         .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 FriendsReference.child(receiver_user_id)
                         .child(sender_user_id)
+                        .child("date")
                         .setValue(saveCurrentDate)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
