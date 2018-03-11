@@ -70,7 +70,7 @@ public class FriendsFragment extends Fragment {
 
                         ) {
                     @Override
-                    protected void populateViewHolder(FriendsViewHolder viewHolder, Friends model, int position) {
+                    protected void populateViewHolder(final FriendsViewHolder viewHolder, Friends model, int position) {
                         viewHolder.setDate(model.getDate());
                         String list_user_id = getRef(position).getKey();
                         usersReference.child(list_user_id)
@@ -79,8 +79,8 @@ public class FriendsFragment extends Fragment {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         String User_name = dataSnapshot.child("User_name").getValue().toString();
                                         String thumb_image = dataSnapshot.child("User_thumb_image").getValue().toString();
-                                        FriendsViewHolder.setUsername(User_name);
-                                        FriendsViewHolder.setThumbImage(thumb_image,getContext());
+                                        viewHolder.setUsername(User_name);
+                                        viewHolder.setThumbImage(thumb_image,getContext());
                                     }
 
                                     @Override
@@ -93,7 +93,7 @@ public class FriendsFragment extends Fragment {
         myFriendList.setAdapter(firebaseRecyclerAdapter);
     }
     public static class FriendsViewHolder extends RecyclerView.ViewHolder{
-        static View mView;
+        View mView;
         public FriendsViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -102,12 +102,12 @@ public class FriendsFragment extends Fragment {
             TextView sinceFriendDate = (TextView)mView.findViewById(R.id.all_users_status);
             sinceFriendDate.setText(date);
         }
-        public static void setUsername(String User_name){
+        public void setUsername(String User_name){
             TextView usernameDisplay =(TextView)mView.findViewById(R.id.all_users_username);
             usernameDisplay.setText(User_name);
         }
 
-        public static void setThumbImage(final String thumb_image,final Context ctx) {
+        public void setThumbImage(final String thumb_image,final Context ctx) {
             final CircleImageView User_thumb_image=(CircleImageView)mView.findViewById(R.id.all_users_profile_image);
 
             Picasso.with(ctx).load(thumb_image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.default_image).into(User_thumb_image, new Callback() {
