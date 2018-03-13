@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        if(item.getItemId()==R.id.main_logout){
+        if (item.getItemId()==R.id.main_logout){
             mAuth.signOut();
             LogoutUser();
         }
