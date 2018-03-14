@@ -1,7 +1,10 @@
 package com.example.fiona.chatapplication;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -73,12 +76,12 @@ public class FriendsFragment extends Fragment {
                     @Override
                     protected void populateViewHolder(final FriendsViewHolder viewHolder, Friends model, int position) {
                         viewHolder.setDate(model.getDate());
-                        String list_user_id = getRef(position).getKey();
+                        final String list_user_id = getRef(position).getKey();
                         usersReference.child(list_user_id)
                                 .addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        String User_name = dataSnapshot.child("User_name").getValue().toString();
+                                        final String User_name = dataSnapshot.child("User_name").getValue().toString();
                                         String thumb_image = dataSnapshot.child("User_thumb_image").getValue().toString();
                                         if(dataSnapshot.hasChild("online")){
                                             Boolean online_status = (boolean)dataSnapshot.child("online").getValue();
@@ -86,6 +89,36 @@ public class FriendsFragment extends Fragment {
                                         }
                                         viewHolder.setUsername(User_name);
                                         viewHolder.setThumbImage(thumb_image,getContext());
+                                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                CharSequence options[] = new CharSequence[]{
+                                                    User_name + "'s Profile",
+                                                        "Send Messgage"
+                                                };
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                                builder.setTitle("Select Options");
+                                                builder.setItems(options, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int position) {
+                                                        if(position==0){
+                                                            Intent profileIntent = new Intent(getContext(),ProfileActivity.class);
+                                                            profileIntent.putExtra("User_visit_id",list_user_id);
+                                                            startActivity(profileIntent);
+
+                                                        }
+                                                        if(position==1){
+                                                            Intent chatIntent = new Intent(getContext(),ChatActivity.class);
+                                                            chatIntent.putExtra("User_visit_id",list_user_id);
+                                                            chatIntent.putExtra("User_name",User_name);
+                                                            startActivity(chatIntent);
+
+                                                        }
+                                                    }
+                                                });
+                                                builder.show();
+                                            }
+                                        });
                                     }
 
                                     @Override

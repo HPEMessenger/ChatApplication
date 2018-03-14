@@ -29,11 +29,13 @@
             android:text="Display Name"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="16sp"
-            android:layout_marginLeft="26dp"
+             android:layout_marginLeft="26dp"
             android:layout_toRightOf="@+id/all_users_profile_image" />
         <ImageView
             android:layout_width="15dp"
             android:layout_height="15dp"
+            android:layout_marginTop="5dp"
+            android:src="@mipmap/online"
             android:id="@+id/online_status"/>
     </LinearLayout>
 
