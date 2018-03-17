@@ -16,11 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -80,11 +82,11 @@ public class FriendsFragment extends Fragment {
                         usersReference.child(list_user_id)
                                 .addValueEventListener(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                    public void onDataChange(final DataSnapshot dataSnapshot) {
                                         final String User_name = dataSnapshot.child("User_name").getValue().toString();
                                         String thumb_image = dataSnapshot.child("User_thumb_image").getValue().toString();
                                         if(dataSnapshot.hasChild("online")){
-                                            Boolean online_status = (boolean)dataSnapshot.child("online").getValue();
+                                            String online_status = (String) dataSnapshot.child("online").getValue().toString();
                                             viewHolder.setUserOnline(online_status);
                                         }
                                         viewHolder.setUsername(User_name);
@@ -108,10 +110,25 @@ public class FriendsFragment extends Fragment {
 
                                                         }
                                                         if(position==1){
-                                                            Intent chatIntent = new Intent(getContext(),ChatActivity.class);
-                                                            chatIntent.putExtra("User_visit_id",list_user_id);
-                                                            chatIntent.putExtra("User_name",User_name);
-                                                            startActivity(chatIntent);
+                                                            if(dataSnapshot.child("online").exists()){
+                                                                Intent chatIntent = new Intent(getContext(),ChatActivity.class);
+                                                                chatIntent.putExtra("User_visit_id",list_user_id);
+                                                                chatIntent.putExtra("User_name",User_name);
+                                                                startActivity(chatIntent);
+                                                            }
+                                                            else {
+                                                                usersReference.child(list_user_id).child("online")
+                                                                        .setValue(ServerValue.TIMESTAMP)
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                Intent chatIntent = new Intent(getContext(),ChatActivity.class);
+                                                                                chatIntent.putExtra("User_visit_id",list_user_id);
+                                                                                chatIntent.putExtra("User_name",User_name);
+                                                                                startActivity(chatIntent);
+                                                                            }
+                                                                        });
+                                                            }
 
                                                         }
                                                     }
@@ -162,9 +179,9 @@ public class FriendsFragment extends Fragment {
             });
         }
 
-        public void setUserOnline(Boolean online_status) {
+        public void setUserOnline(String online_status) {
             ImageView online_status_view = (ImageView)mView.findViewById(R.id.online_status);
-            if(online_status==true){
+            if(online_status.equals("true")){
                 online_status_view.setVisibility(View.VISIBLE);
             }
             else{
