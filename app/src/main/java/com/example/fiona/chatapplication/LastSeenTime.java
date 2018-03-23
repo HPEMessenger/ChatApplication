@@ -25,7 +25,7 @@ public class LastSeenTime extends Application {
             return null;
         }
 
-        
+
         final long diff = now - time;
         if (diff < MINUTE_MILLIS)
         {
