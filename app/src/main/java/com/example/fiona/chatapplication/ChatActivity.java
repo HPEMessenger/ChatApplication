@@ -248,6 +248,7 @@ public class ChatActivity extends AppCompatActivity {
             messageTextBody.put("seen",false);
             messageTextBody.put("type","text");
             messageTextBody.put("time", ServerValue.TIMESTAMP);
+            messageTextBody.put("from",messageSenderId);
             Map messageBodyDetails = new HashMap();
             messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageTextBody);
             messageBodyDetails.put(message_receiver_ref+"/"+message_push_id,messageTextBody);

@@ -8,15 +8,17 @@ public class Messages {
     private String message,type;
     private long time;
     private boolean seen;
+    private String from;
     public Messages(){
 
     }
 
-    public Messages(String message, String type, long time, boolean seen) {
+    public Messages(String message, String type, long time, boolean seen,String from) {
         this.message = message;
         this.type = type;
         this.time = time;
         this.seen = seen;
+        this.from=from;
     }
 
     public String getMessage() {
@@ -27,6 +29,12 @@ public class Messages {
         this.message = message;
     }
 
+    public String getFrom(){
+        return from;
+    }
+    public void setFrom(String from){
+        this.from=from;
+    }
     public String getType() {
         return type;
     }
@@ -50,4 +58,6 @@ public class Messages {
     public void setSeen(boolean seen) {
         this.seen = seen;
     }
+
+
 }

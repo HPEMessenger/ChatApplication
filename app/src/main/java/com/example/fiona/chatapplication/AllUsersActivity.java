@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+//import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -48,32 +48,32 @@ public class AllUsersActivity extends AppCompatActivity {
     public void onStart() {
        super.onStart();
 
-       FirebaseRecyclerAdapter<AllUsers,AllUsersViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<AllUsers, AllUsersViewHolder>(
-               AllUsers.class,
-               R.layout.all_users_display_layout,
-               AllUsersViewHolder.class,
-               allUsersDatabaseReference
-       )
-       {
-
-           @Override
-           protected void populateViewHolder(AllUsersViewHolder holder, AllUsers model, final int position) {
-               holder.setUser_name(model.getUser_name());
-               holder.setUser_status(model.getUser_status());
-               holder.setUser_thumb_image(getApplicationContext(),model.getUser_thumb_image());
-                holder.mView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String visit_user_id=getRef(position).getKey();
-                        Intent profile_activity=new Intent(AllUsersActivity.this,ProfileActivity.class);
-                        profile_activity.putExtra("User_visit_id",visit_user_id);
-                        startActivity(profile_activity);
-                    }
-                });
-           }
-
-       };
-       all_user_list.setAdapter(firebaseRecyclerAdapter);
+//       FirebaseRecyclerAdapter<AllUsers,AllUsersViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<AllUsers, AllUsersViewHolder>(
+//               AllUsers.class,
+//               R.layout.all_users_display_layout,
+//               AllUsersViewHolder.class,
+//               allUsersDatabaseReference
+//       )
+//       {
+//
+//           @Override
+//           protected void populateViewHolder(AllUsersViewHolder holder, AllUsers model, final int position) {
+//               holder.setUser_name(model.getUser_name());
+//               holder.setUser_status(model.getUser_status());
+//               holder.setUser_thumb_image(getApplicationContext(),model.getUser_thumb_image());
+//                holder.mView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        String visit_user_id=getRef(position).getKey();
+//                        Intent profile_activity=new Intent(AllUsersActivity.this,ProfileActivity.class);
+//                        profile_activity.putExtra("User_visit_id",visit_user_id);
+//                        startActivity(profile_activity);
+//                    }
+//                });
+//           }
+//
+//       };
+//       all_user_list.setAdapter(firebaseRecyclerAdapter);
 
    }
 

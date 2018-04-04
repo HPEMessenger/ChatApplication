@@ -5,7 +5,7 @@
     <item android:title="Settings"
         android:id="@+id/main_account_settings"
         app:showAsAction="never"></item>
-    <item android:title="All Users"
+    <item android:title="Finf Friends"
         android:id="@+id/main_all_users_button"
         app:showAsAction="never"></item>
 
