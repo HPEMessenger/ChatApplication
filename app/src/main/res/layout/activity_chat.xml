@@ -9,18 +9,22 @@
 
     <include
         android:id="@+id/chat_bar_layout"
-        layout="@layout/app_bar_layout" />
+        layout="@layout/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="447dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messages_list_of_users"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="450dp"
         android:layout_above="@+id/linearLayout"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/chat_bar_layout">
+        android:background="@android:color/holo_blue_light">
 
     </android.support.v7.widget.RecyclerView>
 

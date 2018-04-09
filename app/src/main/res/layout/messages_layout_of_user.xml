@@ -31,11 +31,9 @@
     <ImageView
         android:id="@+id/messgae_image_view"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/message_text"
-        android:layout_alignStart="@+id/message_text"
-        android:layout_alignTop="@+id/messages_profile_image"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="13dp"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@+id/message_text"
+        android:layout_toEndOf="@+id/message_text"
+        android:layout_toRightOf="@+id/message_text"
         android:scaleType="centerCrop" />
 </RelativeLayout>

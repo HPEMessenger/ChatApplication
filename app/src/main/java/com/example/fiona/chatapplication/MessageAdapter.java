@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,8 +37,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.messages_layout_of_user,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.messages_layout_of_user,parent,false);
         mAuth = FirebaseAuth.getInstance();
         return new MessageViewHolder(v);
     }
@@ -47,10 +48,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         String message_sender_id = mAuth.getCurrentUser().getUid();
         Messages messages= userMesagesList.get(position);
         String from_user_id = messages.getFrom();
+       // Toast.makeText(get,"Please Enter the Name",Toast.LENGTH_LONG).show();
         String fromMessageType = messages.getType();
-        UsersDatabaseReference = FirebaseDatabase.getInstance().getReference()
-                .child("Users")
-                .child(from_user_id);
+        UsersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user_id);
         UsersDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

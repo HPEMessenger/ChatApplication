@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-//import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -37,10 +37,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FriendsFragment extends Fragment {
 
     private RecyclerView myFriendList;
-    private DatabaseReference friendsReference,usersReference;
+    private DatabaseReference friendsReference, usersReference;
     private FirebaseAuth mAuth;
     String online_user_id;
     private View myMainView;
+
     public FriendsFragment() {
         // Required empty public constructor
     }
@@ -50,7 +51,7 @@ public class FriendsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         myMainView = inflater.inflate(R.layout.fragment_friends, container, false);
-        myFriendList = (RecyclerView)myMainView.findViewById(R.id.friends_list);
+        myFriendList = (RecyclerView) myMainView.findViewById(R.id.friends_list);
         mAuth = FirebaseAuth.getInstance();
         online_user_id = mAuth.getCurrentUser().getUid();
         usersReference = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -66,86 +67,86 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//        FirebaseRecyclerAdapter<Friends,FriendsViewHolder> firebaseRecyclerAdapter =
-//                new FirebaseRecyclerAdapter<Friends, FriendsViewHolder>
-//                        (
-//                                Friends.class,
-//                                R.layout.all_users_display_layout,
-//                                FriendsViewHolder.class,
-//                                friendsReference
-//
-//                        ) {
-//                    @Override
-//                    protected void populateViewHolder(final FriendsViewHolder viewHolder, Friends model, int position) {
-//                        viewHolder.setDate(model.getDate());
-//                        final String list_user_id = getRef(position).getKey();
-//                        usersReference.child(list_user_id)
-//                                .addValueEventListener(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(final DataSnapshot dataSnapshot) {
-//                                        final String User_name = dataSnapshot.child("User_name").getValue().toString();
-//                                        String thumb_image = dataSnapshot.child("User_thumb_image").getValue().toString();
-//                                        if(dataSnapshot.hasChild("online")){
-//                                            String online_status = (String) dataSnapshot.child("online").getValue().toString();
-//                                            viewHolder.setUserOnline(online_status);
-//                                        }
-//                                        viewHolder.setUsername(User_name);
-//                                        viewHolder.setThumbImage(thumb_image,getContext());
-//                                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(View v) {
-//                                                CharSequence options[] = new CharSequence[]{
-//                                                    User_name + "'s Profile",
-//                                                        "Send Messgage"
-//                                                };
-//                                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                                                builder.setTitle("Select Options");
-//                                                builder.setItems(options, new DialogInterface.OnClickListener() {
-//                                                    @Override
-//                                                    public void onClick(DialogInterface dialog, int position) {
-//                                                        if(position==0){
-//                                                            Intent profileIntent = new Intent(getContext(),ProfileActivity.class);
-//                                                            profileIntent.putExtra("User_visit_id",list_user_id);
-//                                                            startActivity(profileIntent);
-//
-//                                                        }
-//                                                        if(position==1){
-//                                                            if(dataSnapshot.child("online").exists()){
-//                                                                Intent chatIntent = new Intent(getContext(),ChatActivity.class);
-//                                                                chatIntent.putExtra("User_visit_id",list_user_id);
-//                                                                chatIntent.putExtra("User_name",User_name);
-//                                                                startActivity(chatIntent);
-//                                                            }
-//                                                            else {
-//                                                                usersReference.child(list_user_id).child("online")
-//                                                                        .setValue(ServerValue.TIMESTAMP)
-//                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                                            @Override
-//                                                                            public void onSuccess(Void aVoid) {
-//                                                                                Intent chatIntent = new Intent(getContext(),ChatActivity.class);
-//                                                                                chatIntent.putExtra("User_visit_id",list_user_id);
-//                                                                                chatIntent.putExtra("User_name",User_name);
-//                                                                                startActivity(chatIntent);
-//                                                                            }
-//                                                                        });
-//                                                            }
-//
-//                                                        }
-//                                                    }
-//                                                });
-//                                                builder.show();
-//                                            }
-//                                        });
-//                                    }
-//
-//                                    @Override
-//                                    public void onCancelled(DatabaseError databaseError) {
-//
-//                                    }
-//                                });
-//                    }
-//                };
-//        myFriendList.setAdapter(firebaseRecyclerAdapter);
+        FirebaseRecyclerAdapter<Friends,FriendsViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Friends, FriendsViewHolder>
+                        (
+                                Friends.class,
+                                R.layout.all_users_display_layout,
+                                FriendsViewHolder.class,
+                                friendsReference
+
+                        ) {
+                    @Override
+                    protected void populateViewHolder(final FriendsViewHolder viewHolder, Friends model, int position) {
+                        viewHolder.setDate(model.getDate());
+                        final String list_user_id = getRef(position).getKey();
+                        usersReference.child(list_user_id)
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(final DataSnapshot dataSnapshot) {
+                                        final String User_name = dataSnapshot.child("User_name").getValue().toString();
+                                        String thumb_image = dataSnapshot.child("User_thumb_image").getValue().toString();
+                                        if(dataSnapshot.hasChild("online")){
+                                            String online_status = (String) dataSnapshot.child("online").getValue().toString();
+                                            viewHolder.setUserOnline(online_status);
+                                        }
+                                        viewHolder.setUsername(User_name);
+                                        viewHolder.setThumbImage(thumb_image,getContext());
+                                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                CharSequence options[] = new CharSequence[]{
+                                                    User_name + "'s Profile",
+                                                        "Send Messgage"
+                                                };
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                                builder.setTitle("Select Options");
+                                                builder.setItems(options, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int position) {
+                                                        if(position==0){
+                                                            Intent profileIntent = new Intent(getContext(),ProfileActivity.class);
+                                                            profileIntent.putExtra("User_visit_id",list_user_id);
+                                                            startActivity(profileIntent);
+
+                                                        }
+                                                        if(position==1){
+                                                            if(dataSnapshot.child("online").exists()){
+                                                                Intent chatIntent = new Intent(getContext(),ChatActivity.class);
+                                                                chatIntent.putExtra("User_visit_id",list_user_id);
+                                                                chatIntent.putExtra("User_name",User_name);
+                                                                startActivity(chatIntent);
+                                                            }
+                                                            else {
+                                                                usersReference.child(list_user_id).child("online")
+                                                                        .setValue(ServerValue.TIMESTAMP)
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                Intent chatIntent = new Intent(getContext(),ChatActivity.class);
+                                                                                chatIntent.putExtra("User_visit_id",list_user_id);
+                                                                                chatIntent.putExtra("User_name",User_name);
+                                                                                startActivity(chatIntent);
+                                                                            }
+                                                                        });
+                                                            }
+
+                                                        }
+                                                    }
+                                                });
+                                                builder.show();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                    }
+                };
+        myFriendList.setAdapter(firebaseRecyclerAdapter);
     }
     public static class FriendsViewHolder extends RecyclerView.ViewHolder{
         View mView;
@@ -155,7 +156,7 @@ public class FriendsFragment extends Fragment {
         }
         public void setDate(String date) {
             TextView sinceFriendDate = (TextView)mView.findViewById(R.id.all_users_status);
-            sinceFriendDate.setText("Friend Since:\n " +date);
+            sinceFriendDate.setText("Friend Since:\n" +date);
         }
         public void setUsername(String User_name){
             TextView usernameDisplay =(TextView)mView.findViewById(R.id.all_users_username);

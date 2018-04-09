@@ -4,7 +4,6 @@ package com.example.fiona.chatapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,10 +37,11 @@ public class ChatFragment extends Fragment {
 
     private View myMainView;
     private RecyclerView myChatsList;
-    private DatabaseReference friendsReference,usersReference;
+    private DatabaseReference friendsReference, usersReference;
     private FirebaseAuth mAuth;
     private Query query;
     String online_user_id;
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -52,25 +51,20 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        myMainView =inflater.inflate(R.layout.fragment_chat, container, false);
-        myChatsList = (RecyclerView)myMainView.findViewById(R.id.chats_list);
+        myMainView = inflater.inflate(R.layout.fragment_chat, container, false);
+        myChatsList = (RecyclerView) myMainView.findViewById(R.id.chats_list);
         mAuth = FirebaseAuth.getInstance();
         online_user_id = mAuth.getCurrentUser().getUid();
         usersReference = FirebaseDatabase.getInstance().getReference().child("Users");
         usersReference.keepSynced(true);
-        friendsReference = FirebaseDatabase.getInstance().getReference()
-                .child("Friends")
-                .child(online_user_id);
+        friendsReference = FirebaseDatabase.getInstance().getReference().child("Friends").child(online_user_id);
         friendsReference.keepSynced(true);
         myChatsList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         myChatsList.setLayoutManager(linearLayoutManager);
-        query = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("Users")
-                .limitToLast(50);
+
 
         return myMainView;
     }
@@ -78,20 +72,16 @@ public class ChatFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseRecyclerOptions<Chats> options = new FirebaseRecyclerOptions.Builder<Chats>()
-                .setQuery(query, Chats.class)
-                .build();
-        FirebaseRecyclerAdapter<Chats, ChatFragment.ChatsViewHolder> firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<Chats, ChatsViewHolder>(options) {
-                    @NonNull
-                    @Override
-                    public ChatFragment.ChatsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                        return null;
-                    }
+     FirebaseRecyclerAdapter<Requests,ChatsViewHolder> firebaseRecyclerAdapter =new FirebaseRecyclerAdapter<Requests, ChatsViewHolder>(
+             Requests.class,
+                        R.layout.all_users_display_layoutnew,
+                        ChatsViewHolder.class,
+                        friendsReference
 
+                ) {
                     @Override
-                    protected void onBindViewHolder(@NonNull final ChatsViewHolder viewHolder, int position, @NonNull Chats model) {
-                        final String list_user_id = getRef(position).getKey();
+                    protected void populateViewHolder(final ChatsViewHolder viewHolder, Requests model, int position) {
+                     final String list_user_id = getRef(position).getKey();
                         usersReference.child(list_user_id)
                                 .addValueEventListener(new ValueEventListener() {
                                     @Override
@@ -102,34 +92,39 @@ public class ChatFragment extends Fragment {
 
                                         String user_status = dataSnapshot.child("User_status").getValue().toString();
 
-                                        if (dataSnapshot.hasChild("online")) {
+                                       if(dataSnapshot.hasChild("online")){
                                             String online_status = (String) dataSnapshot.child("online").getValue().toString();
                                             viewHolder.setUserOnline(online_status);
                                         }
                                         viewHolder.setUsername(User_name);
-                                        viewHolder.setThumbImage(thumb_image, getContext());
+                                        viewHolder.setThumbImage(thumb_image,getContext());
                                         viewHolder.setUserStatus(user_status);
                                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if (dataSnapshot.child("online").exists()) {
-                                                    Intent chatIntent = new Intent(getContext(), ChatActivity.class);
-                                                    chatIntent.putExtra("User_visit_id", list_user_id);
-                                                    chatIntent.putExtra("User_name", User_name);
+                                            /*   if(dataSnapshot.child("online").exists()){
+                                                    Intent chatIntent = new Intent(getContext(),ChatActivity.class);
+                                                    chatIntent.putExtra("User_visit_id",list_user_id);
+                                                    chatIntent.putExtra("User_name",User_name);
                                                     startActivity(chatIntent);
-                                                } else {
+                                                }
+                                                else {
                                                     usersReference.child(list_user_id).child("online")
                                                             .setValue(ServerValue.TIMESTAMP)
                                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void aVoid) {
-                                                                    Intent chatIntent = new Intent(getContext(), ChatActivity.class);
-                                                                    chatIntent.putExtra("User_visit_id", list_user_id);
-                                                                    chatIntent.putExtra("User_name", User_name);
+                                                                    Intent chatIntent = new Intent(getContext(),ChatActivity.class);
+                                                                    chatIntent.putExtra("User_visit_id",list_user_id);
+                                                                    chatIntent.putExtra("User_name",User_name);
                                                                     startActivity(chatIntent);
                                                                 }
                                                             });
                                                 }
+*/                                              Intent chatIntent = new Intent(getContext(),ChatActivity.class);
+                                                chatIntent.putExtra("User_visit_id",list_user_id);
+                                                chatIntent.putExtra("User_name",User_name);
+                                                startActivity(chatIntent);
                                             }
                                         });
                                     }
@@ -138,75 +133,12 @@ public class ChatFragment extends Fragment {
                                     public void onCancelled(DatabaseError databaseError) {
 
                                     }
-
                                 });
                     }
-                     /*   (
-                                Chats.class,
-                                R.layout.all_users_display_layout,
-                                ChatFragment.ChatsViewHolder.class,
-                                friendsReference
-
-                        )*/
-//                    @Override
-//                    protected void populateViewHolder(final ChatFragment.ChatsViewHolder viewHolder, Chats model, int position) {
-//                        final String list_user_id = getRef(position).getKey();
-//                        usersReference.child(list_user_id)
-//                                .addValueEventListener(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(final DataSnapshot dataSnapshot) {
-//                                        final String User_name = dataSnapshot.child("User_name").getValue().toString();
-//                                        String thumb_image = dataSnapshot.child("User_thumb_image").getValue().toString();
-//
-//
-//                                        String user_status = dataSnapshot.child("User_status").getValue().toString();
-//
-//                                        if(dataSnapshot.hasChild("online")){
-//                                            String online_status = (String) dataSnapshot.child("online").getValue().toString();
-//                                            viewHolder.setUserOnline(online_status);
-//                                        }
-//                                        viewHolder.setUsername(User_name);
-//                                        viewHolder.setThumbImage(thumb_image,getContext());
-//                                        viewHolder.setUserStatus(user_status);
-//                                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(View v) {
-//                                                if(dataSnapshot.child("online").exists()){
-//                                                    Intent chatIntent = new Intent(getContext(),ChatActivity.class);
-//                                                    chatIntent.putExtra("User_visit_id",list_user_id);
-//                                                    chatIntent.putExtra("User_name",User_name);
-//                                                    startActivity(chatIntent);
-//                                                }
-//                                                else {
-//                                                    usersReference.child(list_user_id).child("online")
-//                                                            .setValue(ServerValue.TIMESTAMP)
-//                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                                @Override
-//                                                                public void onSuccess(Void aVoid) {
-//                                                                    Intent chatIntent = new Intent(getContext(),ChatActivity.class);
-//                                                                    chatIntent.putExtra("User_visit_id",list_user_id);
-//                                                                    chatIntent.putExtra("User_name",User_name);
-//                                                                    startActivity(chatIntent);
-//                                                                }
-//                                                            });
-//                                                }
-//
-//                                            }
-//                                        });
-//                                    }
-//
-//                                    @Override
-//                                    public void onCancelled(DatabaseError databaseError) {
-//
-//                                    }
-//                                });
-//                    }
-//                };
-
                 };
-        myChatsList.setAdapter(firebaseRecyclerAdapter);
+       myChatsList.setAdapter(firebaseRecyclerAdapter);
     }
-    public class ChatsViewHolder extends RecyclerView.ViewHolder{
+    public static class ChatsViewHolder extends RecyclerView.ViewHolder{
         View mView;
         public ChatsViewHolder(View itemView) {
             super(itemView);
@@ -234,16 +166,15 @@ public class ChatFragment extends Fragment {
             });
         }
 
-        public void setUserOnline(String online_status) {
+       public void setUserOnline(String online_status) {
             ImageView online_status_view = (ImageView)mView.findViewById(R.id.online_status);
             if(online_status.equals("true")){
                 online_status_view.setVisibility(View.VISIBLE);
             }
             else{
-                online_status_view.setVisibility(View.VISIBLE);
+                online_status_view.setVisibility(View.INVISIBLE);
             }
-        }
-
+}
         public void setUserStatus(String userStatus) {
             TextView UserStatus = mView.findViewById(R.id.all_users_status);
             UserStatus.setText(userStatus);

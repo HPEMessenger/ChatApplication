@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +36,6 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,28 +73,31 @@ public class ChatActivity extends AppCompatActivity {
         messageReceiverId=getIntent().getExtras().get("User_visit_id").toString();
         messageReceiverName=getIntent().getExtras().get("User_name").toString();
         MessageImageStorageRef = FirebaseStorage.getInstance().getReference().child("Messages_Pictures");
-        chatToolbar = (Toolbar) findViewById(R.id.chat_bar_layout);
+
+
+      chatToolbar = (Toolbar) findViewById(R.id.chat_bar_layout);
         LoadingBar = new ProgressDialog(this);
         setSupportActionBar(chatToolbar);
-        ActionBar actionBar = getSupportActionBar();
+       ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View action_bar_view=layoutInflater.inflate(R.layout.chat_custom_bar,null);
         actionBar.setCustomView(action_bar_view);
-        UsernameTitle = findViewById(R.id.custom_profile_name);
+      UsernameTitle = findViewById(R.id.custom_profile_name);
         UserLastSeen =findViewById(R.id.custom_User_Last_seen);
         userChatProfileImage = findViewById(R.id.custom_Profile_Image);
         SendMessageButton = findViewById(R.id.send_message_btn);
         SelectImageButton = findViewById(R.id.select_image);
         InputMessageText=findViewById(R.id.input_message);
         messageAdapter = new MessageAdapter(messagesList);
-        linearLayoutManager = new LinearLayoutManager(this);
-        userMessageslist.setHasFixedSize(true);
-        userMessageslist.setLayoutManager(linearLayoutManager);
-        userMessageslist.setAdapter(messageAdapter);
-        FetchMessage();
         userMessageslist = findViewById(R.id.messages_list_of_users);
+         linearLayoutManager = new LinearLayoutManager(this);
+      userMessageslist.setHasFixedSize(true);
+        userMessageslist.setLayoutManager(linearLayoutManager);
+         userMessageslist.setAdapter(messageAdapter);
+       FetchMessage();
+
         UsernameTitle.setText(messageReceiverName);
         rootRef.child("Users").child(messageReceiverId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -259,6 +260,7 @@ public class ChatActivity extends AppCompatActivity {
                         Log.d("Chat_Log",databaseError.getMessage().toString());
                     }
                     InputMessageText.setText("");
+                 //   FetchMessage();
                 }
             });
         }
